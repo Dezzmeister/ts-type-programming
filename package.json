@@ -1,0 +1,13 @@
+{
+  "name": "type-programming",
+  "version": "1.0.0",
+  "description": "Type programming fun",
+  "main": "app.ts",
+  "author": "Joe Desmond",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5"
+  }
+}
