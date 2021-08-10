@@ -12,6 +12,10 @@ type Bit = 1 | 0;
 type If<Cond, True, False> = Cond extends True ? True : False;
 type IfNeg<Cond, True, False> = Cond extends True ? False : True;
 
+type TriOp<A, B, C> = Bit;
+type BiOp<A, B> = Bit;
+type UnOp<A> = Bit;
+
 type And<Cond1, Cond2> = If<Cond1, Cond2, False>;
 type Or<Cond1, Cond2> = If<Cond1, True, Cond2>;
 type Not<Cond> = IfNeg<Cond, True, False>;
@@ -31,7 +35,7 @@ type Num4 = {
     "3": Bit;
 }
 
-// Four-bit adder!
+// Four-bit adder
 type Add4<N1 extends Num4, N2 extends Num4> = {
     "0": FullAdder<N1["0"], N2["0"], 0>["out"];
     "1": FullAdder<N1["1"], N2["1"], FullAdder<N1["0"], N2["0"], 0>["carry"]>["out"];
@@ -58,7 +62,31 @@ type Shl4<N extends Num4> = {
     "7": N["3"];
 }
 
-// 8 bit adder! It's defined in this ugly way so that Intellisense will resolve the fully-reduced type
+// Shift right 1
+type Shr1<N extends Num8> = {
+    "0": N["1"];
+    "1": N["2"];
+    "2": N["3"];
+    "3": N["4"];
+    "4": N["5"];
+    "5": N["6"];
+    "6": N["7"];
+    "7": 0;
+}
+
+// Shift left 1
+type Shl1<N extends Num8> = {
+    "0": 0;
+    "1": N["0"];
+    "2": N["1"];
+    "3": N["2"];
+    "4": N["3"];
+    "5": N["4"];
+    "6": N["5"];
+    "7": N["6"];
+}
+
+// 8 bit adder. It's defined in this ugly way so that Intellisense will resolve the fully-reduced type
 // of the sum
 type Add8<N1 extends Num8, N2 extends Num8> = {
     "0": FullAdder<N1["0"], N2["0"], 0>["out"];
@@ -84,8 +112,20 @@ type Zero = {
 }
 
 // 8-bit bitwise or
-type BitOr8<N1 extends Num8, N2 extends Num8> = {
+type Or8<N1 extends Num8, N2 extends Num8> = {
     [P in keyof (N1 | N2)]: Or<N1[P], N2[P]>;
+}
+
+type And8<N1 extends Num8, N2 extends Num8> = {
+    [P in keyof (N1 | N2)]: And<N1[P], N2[P]>;
+}
+
+type Xor8<N1 extends Num8, N2 extends Num8> = {
+    [P in keyof (N1 | N2)]: Xor<N1[P], N2[P]>;
+}
+
+type Not8<N extends Num8> = {
+    [P in keyof N]: Not<N[P]>;
 }
 
 // Set bits on a Num8 type. N1 is the full Num8, and BS is an object with the
@@ -111,3 +151,24 @@ type Exp2To7 = ZeroWith<{"7": 1}>;
 
 type IsOdd<N extends Num8> = N["0"] extends True ? True : False;
 type IsEven<N extends Num8> = Not<IsOdd<N>>;
+
+// Decrement-by-1 map: Maps numbers to their value minus one, so that recursive types
+// like ShrN or ShlN can work
+type DecMap = {
+    0: 0,
+    1: 0,
+    2: 1,
+    3: 2,
+    4: 3,
+    5: 4,
+    6: 5,
+    7: 6,
+};
+
+// Shift right by N bits
+type ShrN<Num extends Num8, I extends keyof DecMap> =
+    I extends 0 ? Num : ShrN<Shr1<Num>, DecMap[I]>;
+
+// Shift left by N bits
+type ShlN<Num extends Num8, I extends keyof DecMap> = 
+    I extends 0 ? Num : ShlN<Shl1<Num>, DecMap[I]>;
