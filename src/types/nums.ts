@@ -100,7 +100,7 @@ type Neg<N extends NumN> = Add<BitwNot<N>, One>;
 // of the second.
 type Sub<N1 extends NumN, N2 extends NumN> = Add<N1, Neg<N2>>;
 
-// TODO: Support negative operands and modify ts compiler type recursion limit
+// TODO: Support negative operands
 type Mul<N1 extends NumN, N2 extends NumN> = N1 extends Zero
 	? Zero
 	: N2 extends Zero
@@ -136,3 +136,9 @@ type Shr<N extends NumN> = LastBitZero<N> &
 
 // Factorial function
 type Fac<N extends NumN> = N extends One ? One : Mul<N, Sub<N, One>>;
+
+
+type Two = Add<One, One>;
+type Three = Add<One, Two>;
+type Six = Mul<Two, Three>;
+type Eighteen = Mul<Three, Six>;

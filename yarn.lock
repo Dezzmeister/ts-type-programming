@@ -82,10 +82,8 @@ ts-node@^10.2.0:
     make-error "^1.1.1"
     yn "3.1.1"
 
-typescript@^4.3.5:
-  version "4.3.5"
-  resolved "https://artifactory6.grabcad.net:443/artifactory/api/npm/npm-repo/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
-  integrity sha1-TRw3zBbok5c8RaBohrcRMjTxGfQ=
+"typescript@file:../TypeScript":
+  version "4.5.0"
 
 yn@3.1.1:
   version "3.1.1"
